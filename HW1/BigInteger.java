@@ -28,14 +28,14 @@ public class BigInteger{
 	}
 	
 	public BigInteger addition(BigInteger that){
-		/*
 		if(isNegative(that.bignum)){
 			return subtract(new BigInteger(toComplement(that.bignum)));
 		}
-		*/
 		int len = Math.max(bignum.size(), that.bignum.size());
 		List<Integer> num1 = copy(bignum, len);
 		List<Integer> num2 = copy(that.bignum, len);
+		out.println("num1 = " + num1);
+		out.println("num2 = " + num2);
 		List<Integer> result = new ArrayList<>();
 		
 		int carry = 0;
@@ -61,6 +61,41 @@ public class BigInteger{
 		else {
 			int isPos = isPositive(num1) ? 0 : 9999;
 			result.add(isPos);
+		}
+		return new BigInteger(result);
+	}
+	
+	public BigInteger subtract(BigInteger that){
+		if(isNegative(that.bignum)){
+			//out.println("OK\n");
+			return addition(new BigInteger(toComplement(that.bignum)));
+		}
+		
+		int len = Math.max(bignum.size(), that.bignum.size());
+		List<Integer> num1 = copy(bignum, len);
+		List<Integer> num2 = copy(that.bignum, len);
+		List<Integer> result = new ArrayList<>();
+		
+		int borrow = 0;
+		for(int i=0; i<len-1; i++){
+			int b = num1.get(i) - num2.get(i) - borrow;
+			if(b>-1) borrow = 0;
+			else{
+				b+=10000;
+				borrow = 1;
+			}
+			result.add(b);
+		}
+		if(borrow==1){
+			if(isNegative(num1)) result.add(9998);
+			else result.clear();
+			for(int i=0; i<8; i++){
+				result.add(9999);
+			}
+		}
+		else{
+			int isNeg = isNegative(num1) ? 9999 : 0;
+			result.add(isNeg);
 		}
 		return new BigInteger(result);
 	}
@@ -95,6 +130,16 @@ public class BigInteger{
 		} 
 		return n;
 	}
+	/*
+	public boolean isGreaterThanOrEqualTo(BigInteger that){
+		
+	}
+	
+		/*
+	public boolean isLessThanOrEqualTo(BigInteger that){
+		
+	}
+	*/
 	
 	private static boolean isNegative(List<Integer> list){
 		int last = list.get(list.size() -1 );
@@ -107,9 +152,22 @@ public class BigInteger{
 	}
 	
 	public static void main(String[] args){
-		BigInteger a = new BigInteger("9999999999999999999999999999999999999999");
-		BigInteger b = new BigInteger("1");
-		out.println(a + " + " + b + " = \n" + (a.addition(b)));
+		Scanner inputReader = new Scanner(System.in);
+		out.println("Enter first integer: ");
+		String s1 = inputReader.next();
+		out.println("Enter your operation: e.g. (+ - * /)");
+		String c = inputReader.next();
+		out.println("Enter second integer: ");
+		String s2 = inputReader.next();
+		
+		BigInteger a = new BigInteger(s1);
+		BigInteger b = new BigInteger(s2);
+		
+		if(c=="+") BigInteger result = a.addition(b);
+		//if(c=="-") result = a.subtract(b);
+		
+		out.println(a + c + b + " = \n" + result);
+		
 	}
 	
 }
