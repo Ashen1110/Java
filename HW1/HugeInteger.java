@@ -148,17 +148,49 @@ public class HugeInteger{
 		} 
 		return n;
 	}
-	/*
-	public boolean isGreaterThanOrEqualTo(HugeInteger that){
+	
+	public boolean isEqualTo(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag){
+		HugeInteger dif = subtract(that, s2_abs_s1, subtract_flag);
+		String s = dif.toString();
+		if(s=="0") return true;
+		else return false;
+	}
+	
+	public boolean isNotEqualTo(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag){
+		HugeInteger dif = subtract(that, s2_abs_s1, subtract_flag);
+		String s = dif.toString();
+		if(s=="0") return false;
+		else return true;
+	}
+	public boolean isGreaterThan(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag){
+		HugeInteger dif = subtract(that, s2_abs_s1, subtract_flag);
+		String s = dif.toString();
+		if(s.charAt(0)!='-') return true;
+		else return false;
+	}
+	
+	public boolean isLessThan(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag){
+		HugeInteger dif = subtract(that, s2_abs_s1, subtract_flag);
+		String s = dif.toString();
+		if(s.charAt(0)!='-') return false;
+		else return true;
+	}
+	
+	
+	public boolean isGreaterThanOrEqualTo(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag){
+		boolean cmp = a.isLessThan(b, s2_abs_s1, subtract_flag);
+		if(cmp==false) return true;
+		else return false;
 		
 	}
 	
-		/*
-	public boolean isLessThanOrEqualTo(HugeInteger that){
-		
+
+	public boolean isLessThanOrEqualTo(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag){
+		boolean cmp = a.isGreaterThan(b, s2_abs_s1, subtract_flag);
+		if(cmp==false) return true;
+		else return false;
 	}
-	*/
-	
+		
 	private static boolean isNegative(List<Integer> list){
 		int last = list.get(list.size() -1 );
 		return last == 9999;
@@ -190,6 +222,9 @@ public class HugeInteger{
 		HugeInteger b = new HugeInteger(s2);
 		
 		boolean subtract_flag = false;
+		
+		boolean cmp = a.isGreaterThanOrEqualTo(b, s2_abs_s1, subtract_flag);
+		out.println("cmp: " + cmp);
 		
 		if(s2_abs_s1==true) {
 			out.println(s2 + " + " + s1 + " = " + a.addition(b,s2_abs_s1, subtract_flag));
