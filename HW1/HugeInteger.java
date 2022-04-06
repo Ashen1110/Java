@@ -17,18 +17,18 @@ public class HugeInteger {
 
 	public HugeInteger add(HugeInteger val) {
 		HugeInteger val1 = new HugeInteger(toString());
-		System.out.println("val1: "+val1.sign);
+		//System.out.println("val1: "+val1.sign);
 		HugeInteger val2 = new HugeInteger(val.toString());
-		System.out.println("val2: "+val2.sign);
+		//System.out.println("val2: "+val2.sign);
 		HugeInteger result = new HugeInteger();
 
-		if (val1.sign == 0 && val2.sign == -1)
-			return val1.subtract(val2);
-		else if (val1.sign == -1 && val2.sign == 0) {
+		if (val1.sign == 0 && val2.sign == -1) {
 			System.out.println("OK\n");
-			result = val1.subtract(val2);
-			result.sign = -1;
-			return result;
+			return val1.subtract(val2);
+		}
+		if (val1.sign == -1 && val2.sign == 0) {
+			//System.out.println("OK\n");
+			return val1.subtract(val2);
 		}
 
 		int up = 0;
@@ -37,7 +37,6 @@ public class HugeInteger {
 			int number = this.getDigit(i) + val.getDigit(i) + up;
 
 			result.setDigit(i, number % 10);
-
 			up = number / 10;
 		}
 
@@ -50,6 +49,16 @@ public class HugeInteger {
 		HugeInteger val1 = new HugeInteger(toString());
 		HugeInteger val2 = new HugeInteger(integer.toString());
 		HugeInteger result = new HugeInteger();
+		/*
+		if(val1.sign==-1 &&  val2.sign==0){
+			result = val1.add(val2);
+			result.sign = -1;
+			return result;
+		}
+		if(val1.sign==0 && val2.sign==-1){
+			val2.sign = 0;
+			return val1.add(val2);
+		}*/
 
 		for (int i = 0; i < MAX_DIGITS; i++) {
 			int number = val1.getDigit(i) - val2.getDigit(i);
@@ -94,21 +103,17 @@ public class HugeInteger {
 
 	private void parse(String s) {
 		int len = s.length();
-
-		if (len > MAX_DIGITS)
-			throw new IllegalArgumentException("Number must be at most 40 digits");
+		if (len > MAX_DIGITS) throw new IllegalArgumentException("Number must be at most 40 digits");
 
 		if (s.charAt(0) == '-') {
 			sign = -1;
 			mostSignificantDigitIndex = len - 2;
-		} else
-			mostSignificantDigitIndex = len - 1;
+		} 
+		else mostSignificantDigitIndex = len - 1;
 
-		for (int i = 0; i < len; i++) {
+		for(int i = 0; i < len; i++){
 			char digit = s.charAt(len - i - 1);
-
-			if (Character.isDigit(digit))
-				digits[i] = digit - 48;
+			if (Character.isDigit(digit)) digits[i] = digit - 48;
 		}
 	}
 
@@ -123,16 +128,14 @@ public class HugeInteger {
 	@Override
 	public String toString() {
 		String integer = sign < 0 ? "-" : "";
-
-		for (int i = mostSignificantDigitIndex; i >= 0; i--)
-			integer += digits[i];
+		for (int i = mostSignificantDigitIndex; i >= 0; i--) integer += digits[i];
 
 		return integer;
 	}
 	
 	public static void main(String[] args) {
-		HugeInteger integer1 = new HugeInteger("-12345");
-		HugeInteger integer2 = new HugeInteger("1225432");
+		HugeInteger integer1 = new HugeInteger("12345");
+		HugeInteger integer2 = new HugeInteger("-1225");
 
 		System.out.printf("%s + %s = %s%n", integer1, integer2, integer1.add(integer2));
 		System.out.printf("%s - %s = %s%n", integer1, integer2, integer1.subtract(integer2));

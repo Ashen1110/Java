@@ -27,15 +27,13 @@ public class BigInteger{
 		this.bignum = bignum;
 	}
 	
-	public BigInteger addition(BigInteger that){
+	public BigInteger addition(BigInteger that, boolean k){
 		if(isNegative(that.bignum)){
-			return subtract(new BigInteger(toComplement(that.bignum)));
+			return subtract(new BigInteger(toComplement(that.bignum)), k);
 		}
 		int len = Math.max(bignum.size(), that.bignum.size());
 		List<Integer> num1 = copy(bignum, len);
 		List<Integer> num2 = copy(that.bignum, len);
-		out.println("num1 = " + num1);
-		out.println("num2 = " + num2);
 		List<Integer> result = new ArrayList<>();
 		
 		int carry = 0;
@@ -47,8 +45,6 @@ public class BigInteger{
 				carry = 1;
 			}
 			result.add(c);
-			//out.println("result = " + result);
-			//out.println("carry = " + carry);
 		}
 		if(carry == 1){
 			if(isPositive(num1)) result.add(1);
@@ -62,13 +58,13 @@ public class BigInteger{
 			int isPos = isPositive(num1) ? 0 : 9999;
 			result.add(isPos);
 		}
+		
 		return new BigInteger(result);
 	}
 	
-	public BigInteger subtract(BigInteger that){
+	public BigInteger subtract(BigInteger that, boolean k){
 		if(isNegative(that.bignum)){
-			//out.println("OK\n");
-			return addition(new BigInteger(toComplement(that.bignum)));
+			return addition(new BigInteger(toComplement(that.bignum)), k);
 		}
 		
 		int len = Math.max(bignum.size(), that.bignum.size());
@@ -97,7 +93,27 @@ public class BigInteger{
 			int isNeg = isNegative(num1) ? 9999 : 0;
 			result.add(isNeg);
 		}
-		return new BigInteger(result);
+		
+		
+		if(k==true) result = toComplement(result);
+		BigInteger ans = new BigInteger(result);
+		return ans;
+	}
+
+	//if |integer2| > |integr1| return true
+	private static boolean abs_compare(String integer1, String integer2){
+		String a1 = integer1.charAt(0) == '-' ? integer1.substring(1) : integer1;
+		String a2 = integer2.charAt(0) == '-' ? integer2.substring(1) : integer2;
+		int a1_len = a1.length();
+		int a2_len = a2.length();
+		if(a1_len < a2_len) return true;
+		if(a1_len == a2_len){
+			for(int i=0; i<a1_len; i++){
+				if(a2.charAt(i) > a1.charAt(i)) return true;
+				else if(a2.charAt(i) < a1.charAt(i)) return false;
+			}
+		}
+		return false;
 	}
 	
 	public String toString(){
@@ -152,28 +168,38 @@ public class BigInteger{
 	}
 	
 	public static void main(String[] args){
+	
+		/*
 		BigInteger integer1 = new BigInteger("12345");
-		BigInteger integer2 = new BigInteger("-154867");
-
-		System.out.printf("%s + %s = %s%n", integer1, integer2, integer1.addition(integer2));
-		System.out.printf("%s - %s = %s%n", integer1, integer2, integer1.subtract(integer2));
-	/*
+		BigInteger integer2 = new BigInteger("-1548");
+		out.printf("%s + %s = %s%n", integer1, integer2, integer1.addition(integer2));
+		out.printf("%s - %s = %s%n", integer1, integer2, integer1.subtract(integer2));
+		*/
 		Scanner inputReader = new Scanner(System.in);
 		out.println("Enter first integer: ");
 		String s1 = inputReader.next();
-		out.println("Enter your operation: e.g. (+ - * /)");
-		String c = inputReader.next();
+		
 		out.println("Enter second integer: ");
 		String s2 = inputReader.next();
+		
+		boolean k = abs_compare(s1, s2);
+		if(k==true){
+			String tmp = s1;
+			s1 = s2;
+			s2 = tmp;	
+		}
 		
 		BigInteger a = new BigInteger(s1);
 		BigInteger b = new BigInteger(s2);
 		
-		if(c=="+") BigInteger result = a.addition(b);
-		//if(c=="-") result = a.subtract(b);
-		
-		out.println(a + c + b + " = \n" + result);
-	*/
+		if(k==true) {
+			out.println(s2 + " + " + s1 + " = " + a.addition(b,k));
+			out.println(s2 + " - " + s1 + " = " + a.subtract(b, k));
+		}
+		else{
+			out.println(s1 + " + " + s2 + " = " + a.addition(b,k));
+			out.println(s1 + " - " + s2 + " = " + a.subtract(b, k));
+		}
 		
 	}
 	
