@@ -152,6 +152,12 @@ public class BigInteger{
 	}
 	
 	public static void main(String[] args){
+		BigInteger integer1 = new BigInteger("12345");
+		BigInteger integer2 = new BigInteger("-154867");
+
+		System.out.printf("%s + %s = %s%n", integer1, integer2, integer1.addition(integer2));
+		System.out.printf("%s - %s = %s%n", integer1, integer2, integer1.subtract(integer2));
+	/*
 		Scanner inputReader = new Scanner(System.in);
 		out.println("Enter first integer: ");
 		String s1 = inputReader.next();
@@ -167,6 +173,7 @@ public class BigInteger{
 		//if(c=="-") result = a.subtract(b);
 		
 		out.println(a + c + b + " = \n" + result);
+	*/
 		
 	}
 	
