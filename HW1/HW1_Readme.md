@@ -1,6 +1,6 @@
 # 大數運算
 
-* class name: BigInteger
+* class name: HugeInteger
 * 最多到 40 位數 (建 int array [40])
 * 要求函式:
   + parse: 接收字串，可以利用 "charAt" 內建函式將每一位數取出並放入陣列中
