@@ -1,144 +1,206 @@
-public class HugeInteger {
-	private static final int MAX_DIGITS = 40;
+import java.util.*;
+import static java.lang.System.out;
 
-	private int sign;
-
-	private int mostSignificantDigitIndex;
-
-	private int[] digits = new int[MAX_DIGITS];
-
-	public HugeInteger() {
-		this("0");
-	}
-
-	public HugeInteger(String s) {
-		parse(s);
-	}
-
-	public HugeInteger add(HugeInteger val) {
-		HugeInteger val1 = new HugeInteger(toString());
-		//System.out.println("val1: "+val1.sign);
-		HugeInteger val2 = new HugeInteger(val.toString());
-		//System.out.println("val2: "+val2.sign);
-		HugeInteger result = new HugeInteger();
-
-		if (val1.sign == 0 && val2.sign == -1) {
-			System.out.println("OK\n");
-			return val1.subtract(val2);
+public class HugeInteger{
+	private List<Integer> bignum;
+	public HugeInteger(String num){
+		//取數字
+		String n = num.charAt(0) == '-' ? num.substring(1) : num;
+		bignum = new ArrayList<>();
+		int n_len = n.length();
+		//每4個字一個int
+		for(int i=n_len-4; i>-4; i-=4){
+			bignum.add(Integer.parseInt(n.substring(i>=0 ? i : 0,i+4)));
 		}
-		if (val1.sign == -1 && val2.sign == 0) {
-			//System.out.println("OK\n");
-			return val1.subtract(val2);
+		
+		//補位
+		int bignum_len = (bignum.size()/8 +1)*8;
+		for(int i=bignum.size(); i<bignum_len; i++){
+			bignum.add(0);
 		}
-
-		int up = 0;
-
-		for (int i = 0; i < MAX_DIGITS; i++) {
-			int number = this.getDigit(i) + val.getDigit(i) + up;
-
-			result.setDigit(i, number % 10);
-			up = number / 10;
-		}
-
-		result.findMostSignificantDigit();
-
-		return result;
-	}
-
-	public HugeInteger subtract(HugeInteger integer) {
-		HugeInteger val1 = new HugeInteger(toString());
-		HugeInteger val2 = new HugeInteger(integer.toString());
-		HugeInteger result = new HugeInteger();
-		/*
-		if(val1.sign==-1 &&  val2.sign==0){
-			result = val1.add(val2);
-			result.sign = -1;
-			return result;
-		}
-		if(val1.sign==0 && val2.sign==-1){
-			val2.sign = 0;
-			return val1.add(val2);
-		}*/
-
-		for (int i = 0; i < MAX_DIGITS; i++) {
-			int number = val1.getDigit(i) - val2.getDigit(i);
-
-			if (number < 0) {
-				int proxIndex = i + 1;
-
-				while (val1.getDigit(proxIndex) == 0 && proxIndex < val1.mostSignificantDigitIndex)
-					proxIndex++;
-
-				if (proxIndex <= val1.mostSignificantDigitIndex) {
-					val1.setDigit(proxIndex, val1.getDigit(proxIndex) - 1);
-
-					while (--proxIndex > i)
-						val1.setDigit(proxIndex, 9);
-
-					val1.setDigit(i, val1.getDigit(i) + 10);
-
-					number = val1.getDigit(i) - val2.getDigit(i);
-				} else {
-					number = val2.getDigit(i) - val1.getDigit(i);
-					sign = -1;
-				}
-			}
-
-			result.setDigit(i, number % 10);
-		}
-
-		result.findMostSignificantDigit();
-
-		return result;
-	}
-
-	private void findMostSignificantDigit() {
-		for (int i = MAX_DIGITS - 1; i >= 0; i--) {
-			if (getDigit(i) != 0) {
-				mostSignificantDigitIndex = i;
-				break;
-			}
-		}
-	}
-
-	private void parse(String s) {
-		int len = s.length();
-		if (len > MAX_DIGITS) throw new IllegalArgumentException("Number must be at most 40 digits");
-
-		if (s.charAt(0) == '-') {
-			sign = -1;
-			mostSignificantDigitIndex = len - 2;
-		} 
-		else mostSignificantDigitIndex = len - 1;
-
-		for(int i = 0; i < len; i++){
-			char digit = s.charAt(len - i - 1);
-			if (Character.isDigit(digit)) digits[i] = digit - 48;
-		}
-	}
-
-	private int getDigit(int index) {
-		return digits[index];
-	}
-
-	private void setDigit(int index, int number) {
-		digits[index] = number;
-	}
-
-	@Override
-	public String toString() {
-		String integer = sign < 0 ? "-" : "";
-		for (int i = mostSignificantDigitIndex; i >= 0; i--) integer += digits[i];
-
-		return integer;
+		//負數轉補數
+		bignum = num.charAt(0)=='-' ? toComplement(bignum) : bignum;
 	}
 	
-	public static void main(String[] args) {
-		HugeInteger integer1 = new HugeInteger("12345");
-		HugeInteger integer2 = new HugeInteger("-1225");
-
-		System.out.printf("%s + %s = %s%n", integer1, integer2, integer1.add(integer2));
-		System.out.printf("%s - %s = %s%n", integer1, integer2, integer1.subtract(integer2));
+	
+	private HugeInteger(List<Integer>bignum){
+		this.bignum = bignum;
+	}
+	
+	public HugeInteger addition(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag){
+		if(isPositive(bignum) && isNegative(that.bignum)){
+			return subtract(new HugeInteger(toComplement(that.bignum)), s2_abs_s1, subtract_flag);
+		}
+		int len = Math.max(bignum.size(), that.bignum.size());
+		List<Integer> num1 = copy(bignum, len);
+		List<Integer> num2 = copy(that.bignum, len);
+		List<Integer> result = new ArrayList<>();
+		
+		int carry = 0;
+		for(int i=0; i<len-1; i++){
+			int c = num1.get(i) + num2.get(i) + carry;
+			if(c<10000) carry = 0;
+			else{
+				c -= 10000;
+				carry = 1;
+			}
+			result.add(c);
+		}
+		if(carry == 1){
+			if(isPositive(num1)) result.add(1);
+			else result.clear();
+			for(int i= 0; i<8; i++){
+				result.add(0);
+			}
+			
+		}
+		else {
+			int isPos = isPositive(num1) ? 0 : 9999;
+			result.add(isPos);
+		}
+		
+		if(subtract_flag==true) result = toComplement(result);
+		return new HugeInteger(result);
+	}
+	
+	public HugeInteger subtract(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag){
+		if(isNegative(bignum) && isPositive(that.bignum)){
+			HugeInteger new_bignum = new HugeInteger(toComplement(bignum));
+			subtract_flag = true;
+			return new_bignum.addition(that, s2_abs_s1, subtract_flag);
+		}
+		
+		int len = Math.max(bignum.size(), that.bignum.size());
+		List<Integer> num1 = copy(bignum, len);
+		List<Integer> num2 = copy(that.bignum, len);
+		List<Integer> result = new ArrayList<>();
+		
+		int borrow = 0;
+		for(int i=0; i<len-1; i++){
+			int b = num1.get(i) - num2.get(i) - borrow;
+			if(b>-1) borrow = 0;
+			else{
+				b+=10000;
+				borrow = 1;
+			}
+			result.add(b);
+		}
+		if(borrow==1){
+			if(isNegative(num1)) result.add(9998);
+			else result.clear();
+			for(int i=0; i<8; i++){
+				result.add(9999);
+			}
+		}
+		else{
+			int isNeg = isNegative(num1) ? 9999 : 0;
+			result.add(isNeg);
+		}
+		
+		//out.println("result: " + result);
+		if(s2_abs_s1==true) result = toComplement(result);
+		return new HugeInteger(result);
 	}
 
+	//if |integer2| > |integr1| return true
+	private static boolean abs_compare(String integer1, String integer2){
+		String a1 = integer1.charAt(0) == '-' ? integer1.substring(1) : integer1;
+		String a2 = integer2.charAt(0) == '-' ? integer2.substring(1) : integer2;
+		int a1_len = a1.length();
+		int a2_len = a2.length();
+		if(a1_len < a2_len) return true;
+		if(a1_len == a2_len){
+			for(int i=0; i<a1_len; i++){
+				if(a2.charAt(i) > a1.charAt(i)) return true;
+				else if(a2.charAt(i) < a1.charAt(i)) return false;
+			}
+		}
+		return false;
+	}
+	
+	public String toString(){
+		List<Integer> num = isNegative(bignum) ? toComplement(bignum) : bignum;
+		StringBuilder builder = new StringBuilder();
+		int num_len = num.size();
+		for(int i=num_len-1; i>-1; i--){
+			builder.append(String.format("%04d", num.get(i)));
+		}  
+		while(builder.length()>0 && builder.charAt(0) == '0'){
+			builder.deleteCharAt(0);
+		}
+		String k = isNegative(bignum) ? builder.insert(0, '-').toString() : builder.toString();
+		return builder.length() == 0 ? "0" : k;
+	}
+	
+	private static List<Integer> toComplement(List<Integer> num){
+		List<Integer> comp = new ArrayList<>();
+		for(Integer i: num){
+			comp.add(9999-i);
+		}
+		comp.set(0, comp.get(0)+1);
+		return comp;
+	}
+	private static List<Integer> copy(List<Integer> num, int newLength){
+		List<Integer> n = new ArrayList<>(num);
+		int n_len = n.size();
+		for(int i=n_len; i<newLength; i++){
+			n.add(isPositive(num) ? 0 : 9999);
+		} 
+		return n;
+	}
+	/*
+	public boolean isGreaterThanOrEqualTo(HugeInteger that){
+		
+	}
+	
+		/*
+	public boolean isLessThanOrEqualTo(HugeInteger that){
+		
+	}
+	*/
+	
+	private static boolean isNegative(List<Integer> list){
+		int last = list.get(list.size() -1 );
+		return last == 9999;
+	}
+	
+	private static boolean isPositive(List<Integer> list){
+		int last = list.get(list.size()-1);
+		return last==0;
+	}
+	
+	public static void main(String[] args){
+	
+		Scanner inputReader = new Scanner(System.in);
+		out.println("Enter first integer: ");
+		String s1 = inputReader.next();
+		
+		out.println("Enter second integer: ");
+		String s2 = inputReader.next();
+		
+		boolean s2_abs_s1 = abs_compare(s1, s2);
+		if(s2_abs_s1==true){
+			String tmp = s1;
+			s1 = s2;
+			s2 = tmp;	
+		}
+		
+		
+		HugeInteger a = new HugeInteger(s1);
+		HugeInteger b = new HugeInteger(s2);
+		
+		boolean subtract_flag = false;
+		
+		if(s2_abs_s1==true) {
+			out.println(s2 + " + " + s1 + " = " + a.addition(b,s2_abs_s1, subtract_flag));
+			out.println(s2 + " - " + s1 + " = " + a.subtract(b, s2_abs_s1, subtract_flag));
+		}
+		else{
+			out.println(s1 + " + " + s2 + " = " + a.addition(b,s2_abs_s1,subtract_flag));
+			out.println(s1 + " - " + s2 + " = " + a.subtract(b, s2_abs_s1,subtract_flag));
+		}
+		
+	}
+	
 }
+
