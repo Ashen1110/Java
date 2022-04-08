@@ -20,3 +20,17 @@
   + multiply: 大數乘法
   + divide: 大數除法
   + remainder: 大數取餘
+  
+
+# Tic-Tac-Toe
+
+* class name: TicTacToe
+* private enum A[3][3]; --> constants: X, O, EMPTY
+* constructor: initialize array into EMPTY
+* two people, first: X; second: O
+* Bonus:
+  + 跟電腦對戰
+  + 讓玩家選擇要先還是後
+  
+* Bonus+Bonus:
+  + 3D array A[4][4][4]

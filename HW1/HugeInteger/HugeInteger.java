@@ -31,10 +31,17 @@ public class HugeInteger{
 		if(isPositive(bignum) && isNegative(that.bignum)){
 			return subtract(new HugeInteger(toComplement(that.bignum)), s2_abs_s1, subtract_flag);
 		}
+		
 		int len = Math.max(bignum.size(), that.bignum.size());
 		List<Integer> num1 = copy(bignum, len);
 		List<Integer> num2 = copy(that.bignum, len);
 		List<Integer> result = new ArrayList<>();
+		
+		if(isNegative(bignum) && isNegative(that.bignum)){
+			num1 = toComplement(num1);
+			num2 = toComplement(num2);
+			subtract_flag = true;
+		}
 		
 		int carry = 0;
 		for(int i=0; i<len-1; i++){
@@ -66,7 +73,7 @@ public class HugeInteger{
 	public HugeInteger subtract(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag){
 		if(isNegative(bignum) && isPositive(that.bignum)){
 			HugeInteger new_bignum = new HugeInteger(toComplement(bignum));
-			subtract_flag = true;
+			if (s2_abs_s1==false) subtract_flag = true;
 			return new_bignum.addition(that, s2_abs_s1, subtract_flag);
 		}
 		
@@ -74,6 +81,12 @@ public class HugeInteger{
 		List<Integer> num1 = copy(bignum, len);
 		List<Integer> num2 = copy(that.bignum, len);
 		List<Integer> result = new ArrayList<>();
+		
+		if(isNegative(bignum) && isNegative(that.bignum)){
+			HugeInteger new_bignum = new HugeInteger(toComplement(num2));
+			if(s2_abs_s1==true)subtract_flag = true;
+			return addition(new_bignum, s2_abs_s1, subtract_flag);
+		}
 		
 		int borrow = 0;
 		for(int i=0; i<len-1; i++){
@@ -165,20 +178,20 @@ public class HugeInteger{
 	public boolean isGreaterThan(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag){
 		HugeInteger dif = subtract(that, s2_abs_s1, subtract_flag);
 		String s = dif.toString();
-		if(s.charAt(0)!='-') return true;
-		else return false;
+		if(s.charAt(0) =='-') return false;
+		else return true;
 	}
 	
 	public boolean isLessThan(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag){
 		HugeInteger dif = subtract(that, s2_abs_s1, subtract_flag);
 		String s = dif.toString();
-		if(s.charAt(0)!='-') return false;
-		else return true;
+		if(s.charAt(0) =='-') return true;
+		else return false;
 	}
 	
 	
 	public boolean isGreaterThanOrEqualTo(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag){
-		boolean cmp = a.isLessThan(b, s2_abs_s1, subtract_flag);
+		boolean cmp = isLessThan(that, s2_abs_s1, subtract_flag);
 		if(cmp==false) return true;
 		else return false;
 		
@@ -186,8 +199,15 @@ public class HugeInteger{
 	
 
 	public boolean isLessThanOrEqualTo(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag){
-		boolean cmp = a.isGreaterThan(b, s2_abs_s1, subtract_flag);
-		if(cmp==false) return true;
+		boolean less = isLessThan(that, s2_abs_s1, subtract_flag);
+		boolean equal = isEqualTo(that, s2_abs_s1, subtract_flag);
+		if(less==true || equal==true) return true;
+		else return false;
+	}
+
+	
+	public static boolean isZero(List<Integer> list){
+		if(list.get(0)==0) return true;
 		else return false;
 	}
 		
@@ -223,14 +243,24 @@ public class HugeInteger{
 		
 		boolean subtract_flag = false;
 		
-		boolean cmp = a.isGreaterThanOrEqualTo(b, s2_abs_s1, subtract_flag);
-		out.println("cmp: " + cmp);
+		boolean is_equal = a.isEqualTo(b, s2_abs_s1, subtract_flag);
+		out.println("Is the first integer equal to the second?\t" + is_equal);
+		boolean cmp1 = a.isGreaterThanOrEqualTo(b, s2_abs_s1, subtract_flag);
+		out.println("Is the first integer greater than or equal to the second?\t" + cmp1);
+		boolean cmp2 = a.isLessThanOrEqualTo(b, s2_abs_s1, subtract_flag);
+		out.println("Is the first integer less than or equal to the second?\t" + cmp2);
+
 		
 		if(s2_abs_s1==true) {
+			boolean iszero = isZero(b.bignum);
+			out.println("Is the first integer equal to zero?\t" + iszero);
+			
 			out.println(s2 + " + " + s1 + " = " + a.addition(b,s2_abs_s1, subtract_flag));
 			out.println(s2 + " - " + s1 + " = " + a.subtract(b, s2_abs_s1, subtract_flag));
 		}
 		else{
+			boolean iszero = isZero(a.bignum);
+			out.println("Is the first integer equal to zero?\t" + iszero);
 			out.println(s1 + " + " + s2 + " = " + a.addition(b,s2_abs_s1,subtract_flag));
 			out.println(s1 + " - " + s2 + " = " + a.subtract(b, s2_abs_s1,subtract_flag));
 		}
