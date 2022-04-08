@@ -13,26 +13,26 @@
 	- new class name
 	- enumerated constants for gamestate: playing, X win, O win, draw
 * public enum Seed
-	  - new class name
-	  - enumerated constants for the seeds and cell constants
+	 - new class name
+	 - enumerated constants for the seeds and cell constants
 * public static void initGame()
-	  - Initialize the game-board contents and the current states
+	- Initialize the game-board contents and the current states
 * public static void playerMove(Seed theSeed)
-	  - player who is the seed can move
-	  - check whether the player move is legal or not
-	  - update game board contents
+	- player who is the seed can move
+	- check whether the player move is legal or not
+	- update game board contents
 * public static void updateGame(Seed theSeed, int currentRow, int currentCol)
-	  - update the current game state after seed player move
+	- update the current game state after seed player move
 * public static boolean isDraw()
-	  - check if it is draw
+	- check if it is draw
 * public static boolean hasWon(Seed theSeed, int currentRow, int currentCol)
-	  - Return true if the player with "theSeed" has won after moving
+	- Return true if the player with "theSeed" has won after moving
 * public static void printBoard() 
-	  - print the whole board 
+	- print the whole board 
 * public static void printCell(Seed content)
-	  - print a cell with specify conent
+	- print a cell with specify conent
 * public static void again()
-	  - ask players whether want to play again or not after the end of this round
+	- ask players whether want to play again or not after the end of this round
 * public static void game()
-	  - the process of this game (the uniom of all functions above)
+	- the process of this game (the uniom of all functions above)
 
