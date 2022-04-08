@@ -10,8 +10,8 @@
 
 ## 函式
 * public enum GameState
-	  - new class name
-	  - enumerated constants for gamestate: playing, X win, O win, draw
+	- new class name
+	- enumerated constants for gamestate: playing, X win, O win, draw
 * public enum Seed
 	  - new class name
 	  - enumerated constants for the seeds and cell constants
