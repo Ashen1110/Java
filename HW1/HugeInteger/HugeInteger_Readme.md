@@ -38,7 +38,7 @@
    
 * 函式:
   + public HugeInteger(String num):
-        - 大數的 Constructor 
+      - 大數的 Constructor 
   + private HugeInteger(List<Integer>bignum)
   + public HugeInteger addition(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag)
   + public HugeInteger subtract(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag)
