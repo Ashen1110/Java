@@ -4,7 +4,12 @@
 * class name: HugeInteger
 * 無限制最多幾位數
 * 可以接受正數或是負數的大數運算
-* 方法描述：
+
+## 執行方法：
+* 在本目錄下執行 makefile
+* 或是在 classes 目錄底下 執行 java HugeInteger
+
+## 方法描述：
   + 建立一個 HugeInteger constructor:
         - 將接收的字串切成每四個 digits 一組並放入 list<Integer> bignum
         - 將 bignum 用 0 補滿 8 的倍數格
@@ -36,7 +41,7 @@
         
         
    
-* 函式:
+## 函式:
   + public HugeInteger(String num):
       - 大數的 Constructor
       - 接收字串並分割存入 list<Integer> 中
@@ -55,7 +60,7 @@
   	  - 將大數轉補數
   + private static List<Integer> copy(List<Integer> num, int newLength)
   	  - 將 HugeInteger 轉成 List<Integer> 的形式
-  ##### 以下是 Compare 函式
+##### 以下是 Compare 函式
   + public boolean isEqualTo(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag)
   	  - 判斷兩數是否相等
   + public boolean isNotEqualTo(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag)
