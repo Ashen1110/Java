@@ -38,21 +38,40 @@
    
 * 函式:
   + public HugeInteger(String num):
-      - 大數的 Constructor 
+      - 大數的 Constructor
+      - 接收字串並分割存入 list<Integer> 中
   + private HugeInteger(List<Integer>bignum)
+      - 接收 List<Integer> 轉成 HugeInteger
   + public HugeInteger addition(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag)
+      - 大數加法
   + public HugeInteger subtract(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag)
+  	  - 大數減法
   + private static boolean abs_compare(String integer1, String integer2)
+  	  - 比較兩個輸入字串的數字大小，如果 integer2 > integer1 回傳 true
+  	  - 為了使 |s1| > |s2|，因此如果回傳 true，就要將 integer1 和 integer2 對調 
   + public String toString()
+  	  - 將 HugeInteger 轉成字串
   + private static List<Integer> toComplement(List<Integer> num)
+  	  - 將大數轉補數
   + private static List<Integer> copy(List<Integer> num, int newLength)
+  	  - 將 HugeInteger 轉成 List<Integer> 的形式
+  ##### 以下是 Compare 函式
   + public boolean isEqualTo(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag)
+  	  - 判斷兩數是否相等
   + public boolean isNotEqualTo(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag)
+  	  - 判斷兩數是否不相等
   + public boolean isGreaterThan(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag)
+  	  - 判斷 integer1 是否大於 integer2
   + public boolean isLessThan(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag)
+  	  - 判斷 integer1 是否小於 integer2
   + public boolean isGreaterThanOrEqualTo(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag)
+  	  - 判斷 integer1 是否大於等於 integer2
   + public boolean isLessThanOrEqualTo(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag)
+  	  - 判斷 integer1 是否小於等於 integer2
   + public static boolean isZero(List<Integer> list)
+  	  - 判斷大數是否為 0
   + private static boolean isNegative(List<Integer> list)
+  	  - 判斷大數是否為負數
   + private static boolean isPositive(List<Integer> list)
+  	  - 判斷大數是否為正數
   
