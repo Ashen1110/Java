@@ -114,6 +114,56 @@ public class HugeInteger{
 		if(s2_abs_s1==true) result = toComplement(result);
 		return new HugeInteger(result);
 	}
+	
+	// 兩個運算元都要是正數
+	private HugeInteger multiply(int val, int shift, boolean s2_abs_s1, boolean subtract_flag) {
+		List<Integer> result = new ArrayList<>();
+		for(int i = 0; i < shift; i++) { 
+			result.add(0); 
+		}
+		
+		int carry = 0;
+		int tmp;
+		for(int i = 0; i < bignum.size() - 1; i++) {
+		    tmp = bignum.get(i) * val + carry;
+		    result.add(tmp % 10000);
+		    carry = tmp / 10000;
+		}
+		if(carry != 0) {
+		    result.add(carry);
+		    for(int i = 0; i < 8; i++) { 
+		    	result.add(0); 
+		    }
+		} 
+		else result.add(0);
+
+		return new HugeInteger(result);
+	}
+    
+	public HugeInteger multiply(HugeInteger that,  boolean s2_abs_s1, boolean subtract_flag) {
+		//如果其中一數是 0 就直接return 0
+		if(isZero(bignum) || isZero(that.bignum)) return new HugeInteger("0");
+		// 轉正數表示
+		HugeInteger op1 = isNegative(bignum) ? new HugeInteger(toComplement(bignum)) : this;
+		List<Integer> op2 = isNegative(that.bignum) ? toComplement(that.bignum) : that.bignum;
+		
+		// 逐位運算
+		List<HugeInteger> r = new ArrayList<>();
+		for(int i = 0; i < op2.size() - 1; i++) {
+		    r.add(op1.multiply(op2.get(i), i, s2_abs_s1, subtract_flag));
+		}
+		// 對逐位運算結果加總
+		HugeInteger result = r.get(0);
+		for(int i = 1; i < r.size(); i++) {
+		    result = result.addition(r.get(i), s2_abs_s1, subtract_flag);
+		}
+		// 判斷正負數
+		return getLast(bignum) + getLast(that.bignum) == 9999 ? new HugeInteger(toComplement(result.bignum)) : result;
+	}
+	
+	private static Integer getLast(List<Integer> list) {
+		return list.get(list.size() - 1);
+	}
 
 	//if |integer2| > |integr1| return true
 	private static boolean abs_compare(String integer1, String integer2){
@@ -254,15 +304,18 @@ public class HugeInteger{
 		if(s2_abs_s1==true) {
 			boolean iszero = isZero(b.bignum);
 			out.println("Is the first integer equal to zero?\t" + iszero);
-			
-			out.println(s2 + " + " + s1 + " = " + a.addition(b,s2_abs_s1, subtract_flag));
+			out.println(s2 + " + " + s1 + " = " + a.addition(b, s2_abs_s1, subtract_flag));
 			out.println(s2 + " - " + s1 + " = " + a.subtract(b, s2_abs_s1, subtract_flag));
+			out.println(s2 + " * " + s1 + " = " + a.multiply(b, s2_abs_s1,subtract_flag));
+			
 		}
 		else{
 			boolean iszero = isZero(a.bignum);
 			out.println("Is the first integer equal to zero?\t" + iszero);
 			out.println(s1 + " + " + s2 + " = " + a.addition(b,s2_abs_s1,subtract_flag));
 			out.println(s1 + " - " + s2 + " = " + a.subtract(b, s2_abs_s1,subtract_flag));
+			out.println(s1 + " * " + s2 + " = " + a.multiply(b,s2_abs_s1,subtract_flag));
+			
 		}
 		
 	}

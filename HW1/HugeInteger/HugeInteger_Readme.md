@@ -4,10 +4,17 @@
 * class name: HugeInteger
 * 無限制最多幾位數
 * 可以接受正數或是負數的大數運算
+* 運算包含加法，減法和乘法
+* 所有要求的 compare 函式都有完成 (==, !=, >, <, >=, <=, 即判斷是否為 0)
 
 ## 執行方法：
 * 在本目錄下執行 makefile
 * 或是在 classes 目錄底下 執行 java HugeInteger
+
+## 程式執行流程：
+* 下完 make 指令編譯完成後會自動執行
+* 請根據程式描述輸入第一個數和第二個數
+* 輸入完後將會列出所有要求的函式結果 (是否相等，是否大於等於，是否小於等於，首數是否為0，加法結果，減法結果，乘法結果)
 
 ## 方法描述：
   + 建立一個 HugeInteger constructor:
@@ -51,6 +58,10 @@
       - 大數加法
   + public HugeInteger subtract(HugeInteger that, boolean s2_abs_s1, boolean subtract_flag)
   	  - 大數減法
+  + private HugeInteger multiply(int val, int shift, boolean s2_abs_s1, boolean subtract_flag)
+  	  - 兩個正數運算元的乘法，透過逐位運算得出進位後再繼續進行下一位…。
+  + public HugeInteger multiply(HugeInteger that,  boolean s2_abs_s1, boolean subtract_flag)
+  	  - 先將兩數轉成正數後，進行普通的乘法，再判斷正負號決定是否需要變號
   + private static boolean abs_compare(String integer1, String integer2)
   	  - 比較兩個輸入字串的數字大小，如果 integer2 > integer1 回傳 true
   	  - 為了使 |s1| > |s2|，因此如果回傳 true，就要將 integer1 和 integer2 對調 
